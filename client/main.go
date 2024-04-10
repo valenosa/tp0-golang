@@ -3,12 +3,17 @@ package main
 import (
 	"client/globals"
 	"client/utils"
+
+	//No quiero tener que importar log, quiero que con importar utils alcance
+	"log"
 )
 
 func main() {
 	utils.ConfigurarLogger()
 
 	// loggear "Hola soy un log" usando la biblioteca log
+	log.Println("Hola soy un log")
+
 	globals.ClientConfig = utils.IniciarConfiguracion("config.json")
 	// validar que la config este cargada correctamente
 

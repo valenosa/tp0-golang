@@ -28,6 +28,7 @@ func IniciarConfiguracion(filePath string) *globals.Config {
 	}
 	defer configFile.Close()
 
+	//Por que no asi: jsonParser := json.NewDecoder(configFile).Decode(&config)
 	jsonParser := json.NewDecoder(configFile)
 	jsonParser.Decode(&config)
 
