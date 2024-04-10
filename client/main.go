@@ -1,25 +1,36 @@
 package main
 
 import (
-	"client/globals"
 	"client/utils"
 
 	//No quiero tener que importar log, quiero que con importar utils alcance
+	"bufio"
 	"log"
+	"os"
 )
 
 func main() {
+
+	//Establece un output dual hacia consola y "tp0.log"
 	utils.ConfigurarLogger()
 
-	globals.ClientConfig = utils.IniciarConfiguracion("config.json")
+	reader := bufio.NewReader(os.Stdin)
 
-	// validar que la config este cargada correctamente
-	if globals.ClientConfig == nil {
-		log.Fatalf("No se pudo cargar la configuración")
+	for {
+
+		text, err := reader.ReadString('\n')
+
+		if err != nil {
+			// Manejar el error
+			log.Printf("Input data error:%s", err.Error())
+		}
+
+		if text == "\n" {
+			break
+		}
+
+		log.Print(text)
 	}
-
-	// loggeamos el valor de la config
-	log.Println(globals.ClientConfig.Mensaje)
 
 	// ADVERTENCIA: Antes de continuar, tenemos que asegurarnos que el servidor esté corriendo para poder conectarnos a él
 
