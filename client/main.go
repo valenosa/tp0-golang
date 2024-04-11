@@ -1,12 +1,8 @@
 package main
 
 import (
+	"client/globals"
 	"client/utils"
-
-	//No quiero tener que importar log, quiero que con importar utils alcance
-	"bufio"
-	"log"
-	"os"
 )
 
 func main() {
@@ -14,31 +10,18 @@ func main() {
 	//Establece un output dual hacia consola y "tp0.log"
 	utils.ConfigurarLogger()
 
-	reader := bufio.NewReader(os.Stdin)
+	//Creo un paquete
+	paquete := utils.Paquete{}
 
-	for {
+	//Extrae la informacion de config.json y la almacena en una variable llamada ClientConfig contenida dentro de globals
+	globals.ClientConfig = utils.IniciarConfiguracion("config.json")
 
-		text, err := reader.ReadString('\n')
+	// Se envia el mensaje
+	utils.EnviarMensaje(globals.ClientConfig.Ip, globals.ClientConfig.Puerto, globals.ClientConfig.Mensaje)
 
-		if err != nil {
-			// Manejar el error
-			log.Printf("Input data error:%s", err.Error())
-		}
+	// Recibe logs por consola y los va almacenando en un paquete-buffer. Una vez se termina el programa (al apretar enter sin escribir nada), sube los logs de este paquete-buffer al paquete original
+	utils.ManejarPaquete(&paquete)
 
-		if text == "\n" {
-			break
-		}
-
-		log.Print(text)
-	}
-
-	// ADVERTENCIA: Antes de continuar, tenemos que asegurarnos que el servidor esté corriendo para poder conectarnos a él
-
-	// enviar un mensaje al servidor con el valor de la config
-
-	// leer de la consola el mensaje
-	// utils.LeerConsola()
-
-	// generamos un paquete y lo enviamos al servidor
-	// utils.GenerarYEnviarPaquete()
+	// Envia el paquete en el cuerpo de una Request
+	utils.EnviarPaquete(globals.ClientConfig.Ip, globals.ClientConfig.Puerto, paquete)
 }
